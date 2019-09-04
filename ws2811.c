@@ -894,25 +894,36 @@ ws2811_return_t ws2811_init(ws2811_t *ws2811)
     }
     device = ws2811->device;
 
+    printf("1 driver_mode is %d\n", device->driver_mode);
+
     if (check_hwver_and_gpionum(ws2811) < 0)
     {
         return WS2811_ERROR_ILLEGAL_GPIO;
     }
 
+    printf("2 driver_mode is %d\n", device->driver_mode);
+
     device->max_count = max_channel_led_count(ws2811);
 
+    printf("3 driver_mode is %d\n", device->driver_mode);
+
     if (device->driver_mode == SPI) {
+        puts("SPI driver mode");
         return spi_init(ws2811);
     }
+
+    printf("4 driver_mode is %d\n", device->driver_mode);
 
     // Determine how much physical memory we need for DMA
     switch (device->driver_mode) {
     case PWM:
+        puts("PWM driver mode");
         device->mbox.size = PWM_BYTE_COUNT(device->max_count, ws2811->freq) +
                             sizeof(dma_cb_t);
         break;
 
     case PCM:
+        puts("PCM driver mode");
         device->mbox.size = PCM_BYTE_COUNT(device->max_count, ws2811->freq) +
                             sizeof(dma_cb_t);
         break;
